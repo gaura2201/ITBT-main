@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WagonWay Logistics – Rail Freight Booking</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f3f5f1;--surface:#fff;--ink:#17201b;--muted:#59655d;--line:#cfd7cf;--rail:#0c3b2e;--signal:#ff5a1f;--signal-ink:#fff;--ok:#1b7a4b;--warn:#b26a00;--bad:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e171c;--surface:#16252d;--ink:#e8eef1;--muted:#9bb0ba;--line:#2a3f49;--rail:#0a2631;--ok:#4cc38a;--warn:#f0b24a;--bad:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0e171c;--surface:#16252d;--ink:#e8eef1;--muted:#9bb0ba;--line:#2a3f49;--rail:#0a2631;--ok:#4cc38a;--warn:#f0b24a;--bad:#ff8a80}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Barlow,system-ui,sans-serif}
+h1,h2,h3{font-family:'Barlow Condensed',Impact,sans-serif;line-height:1.1;margin:0 0 .5em}
+h1{font-size:clamp(2.6rem,7vw,4.6rem);letter-spacing:.01em}
+h2{font-size:2.2rem}h3{font-size:1.4rem}
+a{color:inherit}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--rail);color:#fff}
+nav{max-width:1100px;margin:auto;display:flex;align-items:center;gap:6px;padding:10px 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font:700 1.4rem 'Barlow Condensed',sans-serif;text-decoration:none;margin-right:auto}
+nav a.l{color:#dbe7ec;text-decoration:none;padding:6px 12px;border-radius:6px;font-weight:500}
+nav a.l:hover,nav a.l:focus-visible{background:rgba(255,255,255,.14);outline:none}
+section{max-width:1100px;margin:auto;padding:64px 16px}
+.hero{background:var(--rail);color:#fff;max-width:none;padding:0}
+.hero .in{max-width:1100px;margin:auto;padding:72px 16px 0}
+.hero p.lead{font-size:1.2rem;max-width:56ch;color:#c8d9e0}
+.tag{display:inline-block;background:var(--signal);color:var(--signal-ink);font-weight:600;padding:2px 10px;border-radius:4px;margin-bottom:14px}
+.btn{display:inline-block;background:var(--signal);color:var(--signal-ink);font:600 1.05rem Barlow,sans-serif;padding:12px 26px;border:0;border-radius:6px;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.07)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.btn.alt{background:transparent;color:#fff;border:2px solid #7fa0ae;margin-left:8px}
+.track{height:34px;margin-top:56px;background:repeating-linear-gradient(90deg,#8aa3ae 0 6px,transparent 6px 26px) bottom/100% 6px no-repeat,linear-gradient(#8aa3ae,#8aa3ae) 0 14px/100% 3px no-repeat;position:relative;overflow:hidden}
+.train{position:absolute;left:-200px;top:0;display:flex;gap:3px;animation:go 9s linear 1 forwards}
+.train i{display:block;width:34px;height:14px;background:var(--signal);border-radius:2px}
+.train i:first-child{width:46px;background:#fff}
+@keyframes go{to{left:100%}}
+@media (prefers-reduced-motion:reduce){.train{animation:none;left:40px}html{scroll-behavior:auto}}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
+.card p{color:var(--muted);margin:.3em 0 0}
+.kpi b{display:block;font:700 2.4rem 'Barlow Condensed',sans-serif}
+.kpi span{color:var(--muted)}
+.two{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.result{background:var(--rail);color:#fff;border-radius:10px;padding:22px}
+.result .total{font:700 3rem 'Barlow Condensed',sans-serif;color:var(--signal)}
+.result dl{display:grid;grid-template-columns:1fr auto;gap:4px 12px;margin:12px 0 0}.result dd{margin:0;text-align:right}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:820px;background:var(--surface);border:1px solid var(--line)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:.95rem}
+th{background:var(--bg);font-weight:600}
+.pill{padding:2px 10px;border-radius:99px;font-size:.85rem;font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.s-Delivered{color:var(--ok)}.s-Transit{color:var(--rail)}.s-Delayed{color:var(--bad)}.s-Booked{color:var(--warn)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .s-Transit{color:#7fc4de}}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:10px}
+.bars div{flex:1;background:var(--rail);border-radius:4px 4px 0 0;position:relative;min-height:4px}
+.bars div em{position:absolute;top:-20px;left:0;right:0;text-align:center;font-style:normal;font-size:.8rem}
+.bars small{position:absolute;bottom:-22px;left:0;right:0;text-align:center;color:var(--muted)}
+ul.clean{padding-left:18px;margin:.4em 0}
+.ok{color:var(--ok);font-weight:600;margin-top:10px}
+footer{background:var(--rail);color:#c8d9e0;padding:28px 16px;text-align:center}
+footer a{margin:0 10px}
+h1,h2,h3,.brand,.kpi b,.result .total{font-family:Oswald,Impact,sans-serif;font-weight:700;letter-spacing:.02em}
+body,.btn,input,select,textarea{font-family:'IBM Plex Sans',system-ui,sans-serif}
+header{background:var(--surface);color:var(--ink);border-bottom:4px solid var(--signal)}
+nav a.l{color:var(--ink)}nav a.l:hover,nav a.l:focus-visible{background:var(--bg)}
+.card{border-radius:2px;border-left:6px solid var(--signal)}
+.result,input,select,textarea,.btn{border-radius:2px}
+.hero{background:linear-gradient(100deg,var(--rail) 62%,#13573f)}
+.hero h1{font-size:clamp(3rem,9vw,6rem);text-transform:uppercase}
+.tag{border-radius:0}
+.s-Transit{color:#0b6b8a}
+body.tv section:not(#track),body.tv footer{display:none}body:not(.tv) #track{display:none}
+.steps{display:flex;list-style:none;padding:0;margin:24px 0 8px}.steps li{flex:1;text-align:center;font-size:.85rem;color:var(--muted);position:relative;padding-top:26px}.steps li:before{content:'';position:absolute;top:6px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--line);z-index:1}.steps li:after{content:'';position:absolute;top:12px;left:-50%;width:100%;height:3px;background:var(--line);z-index:0}.steps li:first-child:after{display:none}.steps li.on{color:var(--ink);font-weight:600}.steps li.on:before,.steps li.on:after{background:var(--signal)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px}.kv span{display:block;color:var(--muted);font-size:.85rem}
+.chip{width:auto;display:inline-block;margin:0 6px 6px 0;padding:4px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.live{color:var(--muted);margin:-8px 0 14px}.live i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);margin-right:8px;animation:pl 1.6s infinite}@keyframes pl{50%{opacity:.25}}
+.stats{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:36px;color:#c8d9e0}.stats b{display:block;font:700 2rem Oswald,sans-serif;color:#fff}
+</style>
+</head>
+<body>
+<header><nav aria-label="Main">
+ <a class="brand" href="#home"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#ff5a1f"/><path d="M9 6v20M23 6v20M9 11h14M9 16h14M9 21h14" stroke="#fff" stroke-width="3" fill="none"/></svg>WagonWay Logistics</a>
+ <a class="l" href="#home">Home</a><a class="l" href="#about">About</a><a class="l" href="#services">Services</a><a class="l" href="#dashboard">Dashboard</a><a class="l" href="#contact">Contact</a><button class="btn" id="th" type="button" style="padding:6px 12px;font-size:.9rem">Light/Dark</button>
+</nav></header>
+
+<section class="hero" id="home"><div class="in">
+ <span class="tag">Rail freight booking</span>
+ <h1>WagonWay Logistics</h1>
+ <p class="lead"><b>Purpose:</b> make booking, tracking and paying for rail cargo as easy as booking a truck. Book wagons online, price your move in seconds and follow every consignment to the door.</p>
+ <p><a class="btn" href="#track" data-track>Get Started</a><a class="btn alt" href="#track" data-track>Track an order</a></p>
+ <div class="stats"><div><b>1,200+</b>wagons moved a month</div><div><b>48</b>terminals and ICDs served</div><div><b>92%</b>on-time delivery</div><div><b>24x7</b>control room</div></div>
+ <div class="track" aria-hidden="true"><div class="train"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+</div></section>
+
+<section id="track">
+ <p><a href="#home">&larr; Back to home</a></p>
+ <h2>Track your order</h2>
+ <form id="tf" class="card" novalidate>
+  <label for="tno">Order number</label>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><input id="tno" placeholder="e.g. WWL-24101" style="max-width:320px"><button class="btn" type="submit">Track order</button></div>
+  <p style="margin-bottom:6px">Try a sample order:</p><div id="chips"></div>
+ </form>
+ <div id="tres" style="margin-top:16px" aria-live="polite"></div>
+ <p style="margin-top:24px">Want to ship something new? <a href="#services">Get a cost estimate and book</a></p>
+</section>
+
+<section id="about">
+ <h2>About the business</h2>
+ <div class="grid">
+  <div class="card"><h3>What we do</h3><p>We book rail wagons and rakes for businesses, handle loading, first and last mile trucking, and keep you updated until delivery.</p></div>
+  <div class="card"><h3>Target customers</h3><p>Manufacturers, steel and cement plants, farm produce traders, FMCG distributors and exporters moving bulk or container cargo.</p></div>
+  <div class="card"><h3>Service area</h3><p>Western India hub in Vadodara with corridors to Mumbai, Delhi, Kolkata, Chennai and the ports of Mundra and Kandla.</p></div>
+  <div class="card"><h3>Key value</h3><p>Up to 30% lower cost per tonne-km than road on long hauls, lower emissions, and one dashboard for every consignment.</p></div>
+ </div>
+</section>
+
+<section id="services" style="padding-top:0">
+ <h2>Services</h2>
+ <div class="grid" style="margin-bottom:32px">
+  <div class="card"><h3>Full wagon booking</h3><p>Reserve covered, open or tank wagons for a single customer.</p></div>
+  <div class="card"><h3>Container rail</h3><p>20ft and 40ft container movement between terminals and ports.</p></div>
+  <div class="card"><h3>Door-to-door</h3><p>Trucking at both ends so cargo leaves your gate and arrives at theirs.</p></div>
+  <div class="card"><h3>Live tracking</h3><p>Location, ETA and delivery partner for every order, any time.</p></div>
+ </div>
+ <h2>Delivery cost calculator</h2>
+ <div class="two">
+  <div class="card">
+   <label for="from">From</label><select id="from"></select>
+   <label for="to">To</label><select id="to"></select>
+   <label for="cargo">Cargo type</label>
+   <select id="cargo"><option value="1">General goods</option><option value="1.15">Food and perishables</option><option value="0.9">Coal, ore, cement (bulk)</option><option value="1.35">Hazardous / chemicals</option></select>
+   <label for="wt">Weight (tonnes)</label><input id="wt" type="number" min="1" max="4000" value="60">
+   <label for="svc">Service level</label>
+   <select id="svc"><option value="1">Standard</option><option value="1.2">Express priority</option></select>
+   <label><input id="dd" type="checkbox" style="width:auto"> Add door-to-door trucking (Rs 1,800 per end)</label>
+  </div>
+  <div class="result" aria-live="polite">
+   <div>Estimated total</div><div class="total" id="total">–</div>
+   <dl id="brk"></dl>
+   <p style="font-size:.85rem;color:#c8d9e0">Indicative estimate based on straight-line distance x 1.25 rail factor. Final quote is confirmed on booking.</p>
+   <a class="btn" href="#contact" id="bookbtn">Request this booking</a>
+  </div>
+ </div>
+</section>
+
+<section id="dashboard" style="padding-top:0">
+ <h2>Manager dashboard</h2><p class="live"><i></i>Live data &middot; <b id="upd"></b> IST</p>
+ <div class="grid" id="kpis"></div>
+ <div class="two" style="margin-top:16px">
+  <div class="card"><h3>Orders by status</h3><div class="bars" id="statusBars"></div><div style="height:22px"></div></div>
+  <div class="card"><h3>Revenue last 6 weeks (Rs lakh)</h3><div class="bars" id="revBars"></div><div style="height:22px"></div></div>
+ </div>
+ <div class="card" style="margin-top:16px"><h3>Needs attention</h3><ul class="clean" id="alerts"></ul></div>
+ <h3 style="margin-top:32px">Order tracking</h3>
+ <label for="q" class="sr" style="margin-top:0">Search by customer, order number or status</label>
+ <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><input id="q" placeholder="Search customer, order number or status" style="max-width:420px"><select id="sf" aria-label="Filter by status" style="max-width:200px"><option value="">All statuses</option><option value="Booked">Booked</option><option value="Transit">In transit</option><option value="Delayed">Delayed</option><option value="Delivered">Delivered</option></select></div>
+ <div class="scroll"><table><thead><tr><th>Customer</th><th>Order no.</th><th>Delivery status</th><th>Current location</th><th>Expected delivery</th><th>Delivery partner</th><th>Contact</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+
+<section id="contact" style="padding-top:0">
+ <h2>Contact and enquiry</h2>
+ <div class="two">
+  <div class="card">
+   <h3>WagonWay Logistics Pvt. Ltd.</h3>
+   <p><b>Email:</b> bookings@wagonwaylogistics.example</p>
+   <p><b>Phone:</b> +91 265 600 4400 (Mon-Sat, 9 am to 7 pm)</p><p><b>Control room:</b> 24x7 for live shipments</p>
+   <p><b>Location:</b> Plot 14, Freight Terminal Road, Makarpura GIDC, Vadodara, Gujarat 390010</p><p><b>GSTIN:</b> 24ABCDE1234F1Z5 (sample)</p>
+   <p><b>Useful links:</b><br><a href="https://www.indianrailways.gov.in" target="_blank" rel="noopener">Indian Railways</a> &nbsp; <a href="https://www.fois.indianrail.gov.in" target="_blank" rel="noopener">FOIS freight portal</a></p>
+  </div>
+  <div class="card">
+   <h3>Send an enquiry</h3>
+   <form id="enq" novalidate>
+    <label for="n">Your name</label><input id="n" required>
+    <label for="e">Email</label><input id="e" type="email" required>
+    <label for="m">What do you want to ship?</label><textarea id="m" rows="4" required></textarea>
+    <p style="margin-top:14px"><button class="btn" type="submit">Send enquiry</button></p>
+    <div class="ok" id="msg" role="status"></div>
+   </form>
+  </div>
+ </div>
+</section>
+
+<footer>
+ <p>&copy; 2026 WagonWay Logistics. Demo app with sample data. Tip: press keys 1 to 5 to jump between sections.</p>
+ <p style="font-size:.85rem">Keyboard shortcuts: 1-5 jump to sections, / searches orders, C opens the cost calculator.</p>
+ <a href="#home">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#dashboard">Dashboard</a><a href="#contact">Contact</a>
+ <a href="https://www.indianrailways.gov.in" target="_blank" rel="noopener">Indian Railways</a>
+</footer>
+
+<script>
+const $=s=>document.querySelector(s), fmt=n=>'Rs '+Math.round(n).toLocaleString('en-IN');
+const C={Vadodara:[22.31,73.18],Ahmedabad:[23.02,72.57],Mumbai:[19.08,72.88],Delhi:[28.61,77.21],Kolkata:[22.57,88.36],Chennai:[13.08,80.27],Mundra:[22.84,69.72],Kandla:[23.03,70.22],Jaipur:[26.91,75.79],Nagpur:[21.15,79.09]};
+const names=Object.keys(C);
+$('#from').innerHTML=$('#to').innerHTML=names.map(n=>`<option>${n}</option>`).join('');
+$('#to').value='Delhi';
+function km(a,b){const r=x=>x*Math.PI/180,[p,q]=C[a],[u,v]=C[b],h=Math.sin(r(u-p)/2)**2+Math.cos(r(p))*Math.cos(r(u))*Math.sin(r(v-q)/2)**2;return 12742*Math.asin(Math.sqrt(h))*1.25}
+function calc(){
+ const a=$('#from').value,b=$('#to').value,t=Math.max(+$('#wt').value||0,0);
+ if(a===b||!t){$('#total').textContent='–';$('#brk').innerHTML='<dt>Pick two different cities and a weight.</dt><dd></dd>';return}
+ const d=km(a,b),base=d*t*1.9*$('#cargo').value*$('#svc').value,hand=t*45,dd=$('#dd').checked?3600:0,gst=(base+hand+dd)*.05;
+ $('#total').textContent=fmt(base+hand+dd+gst);
+ $('#brk').innerHTML=`<dt>Distance</dt><dd>${Math.round(d)} km</dd><dt>Freight (Rs 1.90/tonne-km base)</dt><dd>${fmt(base)}</dd><dt>Handling</dt><dd>${fmt(hand)}</dd><dt>Door-to-door</dt><dd>${fmt(dd)}</dd><dt>GST 5%</dt><dd>${fmt(gst)}</dd><dt>Est. transit</dt><dd>${Math.ceil(d/350)+1} days</dd>`;
+}
+['from','to','cargo','wt','svc','dd'].forEach(i=>$('#'+i).addEventListener('input',calc));calc();
+
+const O=[
+['Shreeji Agro Foods','WWL-24101','Transit','Ratlam Jn, MP','16 Oct, 18:00','Deccan Rail Logistics','+91 98250 11101','Vadodara → Delhi','BCNHL covered · 58 wagons · 3,480 t'],
+['Jai Hind Retail','WWL-24102','Delivered','Delhi Tughlakabad ICD','12 Oct, 09:30','Sahyadri Cargo Movers','+91 98250 11102','Mundra → Delhi','Container 40ft · 30 TEU'],
+['Navin Steel','WWL-24103','Delayed','Itarsi Jn, MP','17 Oct, 22:00','Narmada Road Carriers','+91 98250 11103','Mumbai → Kolkata','BOXN open · 58 wagons · 3,654 t'],
+['Saurashtra Cements','WWL-24104','Transit','Palanpur Jn, Gujarat','15 Oct, 12:00','Konkan Container Services','+91 98250 11104','Kandla → Jaipur','BCN · 42 wagons · 2,520 t'],
+['Kisan Traders','WWL-24105','Booked','Vadodara Freight Terminal','20 Oct, 08:00','Sahyadri Cargo Movers','+91 98250 11105','Vadodara → Nagpur','BCNHL covered · 12 wagons · 720 t'],
+['Patel Chemicals','WWL-24106','Transit','Surat Goods Yard','16 Oct, 07:30','Narmada Road Carriers','+91 98250 11106','Ahmedabad → Mumbai','BTPN tank · 20 wagons · 1,100 t'],
+['Mehta Textiles','WWL-24107','Delivered','Kolkata Howrah Terminal','11 Oct, 14:00','Deccan Rail Logistics','+91 98250 11107','Ahmedabad → Kolkata','Container 20ft · 40 TEU'],
+['Orbit Auto Parts','WWL-24108','Booked','Mundra Port Rail Yard','21 Oct, 10:00','Konkan Container Services','+91 98250 11108','Mundra → Delhi','Container 40ft · 30 TEU']];
+function rows(){const q=$('#q').value.toLowerCase();
+ $('#rows').innerHTML=O.filter(r=>r.join(' ').toLowerCase().includes(q)&&(!$('#sf').value||r[2]===$('#sf').value)).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="pill s-${r[2]}">${r[2]==='Transit'?'In transit':r[2]}</span></td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td></tr>`).join('')||'<tr><td colspan="7">No orders match. Try a different search.</td></tr>'}
+$('#q').addEventListener('input',rows);$('#sf').addEventListener('change',rows);rows();
+
+let enq=7,rev=48.6,seq=24108;
+function dash(){
+ const c=s=>O.filter(r=>r[2]===s).length;
+ const k=[['Active shipments',c('Transit')+c('Delayed'),'In transit or delayed'],['On-time delivery','92%','Last 30 days'],['Revenue this month','Rs '+rev.toFixed(1)+' lakh','Updates with every new booking'],['Average transit time','3.4 days','Across all corridors'],['Open enquiries',enq,'Awaiting a reply'],['Wagon utilisation','81%','Capacity booked this week']];
+ $('#kpis').innerHTML=k.map(x=>`<div class="card kpi"><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+ const bars=(el,d,mx)=>$(el).innerHTML=d.map(x=>`<div style="height:${Math.max(x[1]/mx*100,3)}%"><em>${x[1]}</em><small>${x[0]}</small></div>`).join('');
+ bars('#statusBars',[['Booked',c('Booked')],['Transit',c('Transit')],['Delayed',c('Delayed')],['Done',c('Delivered')]],Math.max(c('Booked'),c('Transit'),c('Delayed'),c('Delivered')));
+ bars('#revBars',[['W1',8.2],['W2',9.4],['W3',7.9],['W4',10.8],['W5',11.6],['W6',12.1]],13);
+ $('#alerts').innerHTML=O.filter(r=>r[2]==='Delayed').map(r=>`<li><b>${r[1]}</b> for ${r[0]} is delayed near ${r[3]}. Contact ${r[5]}.</li>`).join('')+`<li>${enq} customer enquiries are waiting for a reply.</li><li>2 bookings start loading within 7 days.</li>`}
+dash();
+
+$('#enq').addEventListener('submit',e=>{e.preventDefault();
+ if(!$('#n').value.trim()||!/\S+@\S+\.\S+/.test($('#e').value)||!$('#m').value.trim()){$('#msg').style.color='var(--bad)';$('#msg').textContent='Enter your name, a valid email and a short description of your cargo.';return}
+ enq++;dash();$('#msg').style.color='var(--ok)';$('#msg').textContent='Thank you, '+$('#n').value.trim()+'. Your enquiry reference is WWE-'+(2000+enq)+'. We will reply to '+$('#e').value.trim()+' within one working day.';e.target.reset()});
+document.addEventListener('keydown',e=>{
+ if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
+ const ids=['home','about','services','dashboard','contact'];
+ if(e.key>='1'&&e.key<='5'){document.getElementById(ids[e.key-1]).scrollIntoView();history.replaceState(null,'','#'+ids[e.key-1])}
+ else if(e.key==='/'){e.preventDefault();document.getElementById('dashboard').scrollIntoView();$('#q').focus()}
+ else if(e.key==='c'||e.key==='C'){document.getElementById('services').scrollIntoView();$('#wt').focus()}
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
+$('#bookbtn').addEventListener('click',()=>{const a=$('#from').value,b=$('#to').value,t=$('#total').textContent;if(t==='–')return;const d=km(a,b),cost=+t.replace(/\D/g,'');const eta=new Date(Date.now()+(Math.ceil(d/350)+2)*864e5);seq++;O.unshift([$('#n').value.trim()||'New customer','WWL-'+seq,'Booked',a+' Freight Terminal',eta.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+', 09:00',['Sahyadri Cargo Movers','Narmada Road Carriers','Deccan Rail Logistics'][seq%3],'+91 265 600 4400',a+' → '+b,'To be allotted · '+$('#wt').value+' t']);rev+=cost/1e5;rows();dash();$('#msg').style.color='var(--ok)';$('#msg').textContent='Booking WWL-'+seq+' created and added to the dashboard. Add your details below to confirm.'});
+$('#th').addEventListener('click',()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark'});
+$('#bookbtn').addEventListener('click',()=>{if($('#total').textContent!=='–')$('#m').value='Booking request: '+$('#wt').value+' tonnes of '+$('#cargo').selectedOptions[0].text+' from '+$('#from').value+' to '+$('#to').value+' ('+$('#svc').selectedOptions[0].text+'). Estimated cost '+$('#total').textContent+'.'});
+document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea')||e.ctrlKey||e.metaKey||e.altKey||e.key.length!==1)return;const i='12345'.indexOf(e.key);if(i>-1)document.getElementById(['home','about','services','dashboard','contact'][i]).scrollIntoView({behavior:'smooth'})});
+const stages=['Booked','Loaded','In transit','Near destination','Delivered'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function chips(){$('#chips').innerHTML=O.slice(0,6).map(r=>`<button type="button" class="chip" data-o="${esc(r[1])}">${esc(r[1])}</button>`).join('')}
+function evs(r,i){const L=['Booking confirmed and wagons allotted','Loading completed and rake sealed','Departed origin terminal','Arrived at destination division yard','Delivered and proof of delivery signed'],f=t=>new Date(Date.now()-t*36e5).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+ let o=[];for(let k=0;k<=i;k++)o.push(`<li><b>${f((i-k)*17+1)}</b> ${L[k===1&&i>=2?1:k]}</li>`);
+ if(r[2]==='Delayed')o.push(`<li><b>${f(2)}</b> Held at ${esc(r[3])} due to section congestion</li>`);return o.reverse().join('')}
+function showOrder(no){const r=O.find(x=>x[1].toLowerCase()===no.trim().toLowerCase()),el=$('#tres');
+ if(!r){el.innerHTML='<div class="card"><b>No order found.</b><p>Check the order number (for example WWL-24101) and try again.</p></div>';return}
+ const idx={Booked:0,Transit:2,Delayed:2,Delivered:4}[r[2]],lab=r[2]==='Transit'?'In transit':r[2];
+ el.innerHTML=`<div class="card"><h3>${esc(r[1])} <span class="pill s-${r[2]}">${lab}</span></h3><div class="kv"><div><span>Customer name</span>${esc(r[0])}</div><div><span>Current location</span>${esc(r[3])}</div><div><span>Expected delivery</span>${esc(r[4])}</div><div><span>Delivery partner</span>${esc(r[5])}</div><div><span>Contact</span>${esc(r[6])}</div><div><span>Route</span>${esc(r[7])}</div><div><span>Wagon and load</span>${esc(r[8])}</div></div><ul class="steps">${stages.map((s,i)=>`<li class="${i<=idx?'on':''}">${s}</li>`).join('')}</ul><h3 style="margin-top:18px">Shipment history</h3><ul class="clean">${evs(r,idx)}</ul>${r[2]==='Delayed'?'<p style="color:var(--bad)">This order is delayed. The delivery partner has been alerted.</p>':''}</div>`}
+$('#tf').addEventListener('submit',e=>{e.preventDefault();showOrder($('#tno').value)});
+$('#chips').addEventListener('click',e=>{const o=e.target.dataset.o;if(o){$('#tno').value=o;showOrder(o)}});
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;if(a.hasAttribute('data-track')){document.body.classList.add('tv');chips();window.scrollTo(0,0)}else document.body.classList.remove('tv')},true);
+const tick=()=>{$('#upd').textContent=new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'})};tick();setInterval(tick,1000);
+</script>
+</body>
+</html>
